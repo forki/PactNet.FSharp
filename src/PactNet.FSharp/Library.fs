@@ -1,13 +1,7 @@
 namespace PactNet.FSharp
 
-/// Documentation for my library
-///
-/// ## Example
-///
-///     let h = Library.hello 1
-///     printfn "%d" h
-///
-module Library =
+/// An FSharp-friendly wrapper for PactNet
+module API =
 
   /// Returns 42
   ///
