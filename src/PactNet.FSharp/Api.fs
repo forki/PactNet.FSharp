@@ -1,5 +1,9 @@
 namespace PactNet.FSharp
 
+[<AutoOpen>]
+module Prelude =
+  let flip f x y = f y x
+
 /// An FSharp-friendly wrapper for PactNet
 module API =
 
@@ -9,13 +13,14 @@ module API =
   open PactNet.Mocks.MockHttpService
 
   let serviceConsumer consumer = (new PactBuilder()).ServiceConsumer(consumer)
-  let hasPactWith provider (pactBuilder:IPactBuilder) = pactBuilder.HasPactWith(provider)
-  let mockServiceOnPort port (pactBuilder:IPactBuilder) = pactBuilder.MockService(port)
 
-  /// Pactnet doesn't yet use the jsonSettings safely, it uses these settings to serialize the entire request and responses so the Headers get incorrectly cased.
-  /// Until this is fixed, we suggest using the mockServiceOnPort function wich will use the defaults, and decorate the request and response bodies with Newtonsoft
-  /// attributes to control the serialization.
-  let mockServiceOnPortWithSerializer port (jsonSettings:JsonSerializerSettings) (pactBuilder:IPactBuilder) = pactBuilder.MockService(port, jsonSettings)
+  let hasPactWith provider (pactBuilder : IPactBuilder) = pactBuilder.HasPactWith(provider)
+
+  let mockServiceOnPort port (pactBuilder : IPactBuilder) = pactBuilder.MockService(port)
+
+  let mockServiceOnPortWithSerializer port (jsonSettings : JsonSerializerSettings) (pactBuilder : IPactBuilder) =
+    pactBuilder.MockService(port, jsonSettings)
+
   let build (pactBuilder:IPactBuilder) = pactBuilder.Build()
 
   type PactRequest = {
@@ -83,9 +88,6 @@ module API =
     Request         = None
     Response        = None
   }
-
-
-  open FSharpx.Functional.Prelude
 
   let registerWith (provider:IMockProviderService) = function
     | { Description = Some d; Request = Some req; Response = Some resp; ProviderState = state} ->
